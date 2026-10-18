@@ -8,28 +8,34 @@
 [![License](https://img.shields.io/badge/license-MIT-blue.svg)](LICENSE)
 
 **Қазақстанның Ұлттық тауар каталогына (ҰТК / НКТ)** арналған Symfony-клиент:
-[nationalcatalog.kz](https://nationalcatalog.kz) порталының API-і (тауарға өтінімдер, атрибуттар,
-анықтамалықтар) және [nct.gov.kz](https://nct.gov.kz) жария іздеулері. Сұрауларды қайталау, Redis
-арқылы лимиттер, типтелген қателер, жауаптарды талдау.
+[nationalcatalog.kz](https://nationalcatalog.kz) порталының толық API-і (тауарға өтінімдер және
+олардың өмірлік циклі, файлдар, дубликаттар, карточкалар, атрибуттар, анықтамалықтар) және
+[nct.gov.kz](https://nct.gov.kz) жария API-і (іздеу, уақыт бойынша экспорт). Сұрауларды қайталау, Redis
+арқылы лимиттер, типтелген қателер, хаттама деректеріне арналған мән-объектілер.
 
 Бандл порталдың хаттамасын біледі, бірақ сіздің деректер моделіңіз туралы ештеңе білмейді: жауаптар
-талданған массив түрінде қайтарылады, ал олармен не істеу — қолданбаның шешімі.
+талданған массив (немесе шағын мән-объектілер) түрінде қайтарылады, ал олармен не істеу — қолданбаның шешімі.
+
+Қамту: порталдың ресми спецификациясындағы барлық 23 операция (`https://nationalcatalog.kz/gwp/docs`)
+және nct.gov.kz жария коллекциясының барлық 5 сұрауы.
 
 ## Мүмкіндіктер
 
-- **Портал API-і** (`nationalcatalog.kz`, `X-API-KEY`): тауарға өтінім жасау, модерацияға жіберу,
-  өзгерту, жариялау, мәртебесі мен толық мәліметтерін оқу, өтінімдер тізімін, атрибут сипаттамаларын
-  және анықтамалықтарды алу, GTIN бойынша карточканы табу.
-- **Жария API** (`nct.gov.kz`, авторизациясыз): GTIN бойынша карточкаларды іздеу, қолданыстағы
-  карточканы таңдау, id бойынша карточка (ОКТРУ категориясымен).
+- **Портал API-і** (`nationalcatalog.kz`, `X-API-KEY`): өтінімді жасау, жаңарту, жою, кері қайтару,
+  модерацияға жіберу және жариялау; жарияланған карточканы NTIN бойынша өңдеуге өтінім жасау;
+  мәртебе бойынша сүзгісі бар өтінімдер тізімі; мәртебе мен мәліметтер; дубликаттар бойынша шешім;
+  фотосурет пен PDF жүктеу; NTIN/GTIN бойынша карточкалар (біреу және тізім); негізгі және кеңейтілген
+  атрибуттардың сипаттамалары; анықтамалықтар (тізім, түбірлер, ұрпақтар, беттелген элементтер).
+- **Жария API** (`nct.gov.kz`): бір код, 100 кодқа дейінгі топ немесе атау бойынша карточкаларды іздеу;
+  id бойынша карточка; өзгерген тауарларды уақыт бойынша экспорттау және санау (JWT арқылы).
 - **Бір фасад** — `NctClient::fetchProductByGtin()` карточканы бапталған дереккөзден алады.
 - **Лимиттер** — әр хостқа алдын ала жылжымалы терезе (Redis, Lua, процестерге ортақ) және
   `429` / `422 TOO_MANY_REQUESTS` кейін қайталау.
-- **Шақыру деңгейіндегі баптаулар** — интерфейстегі синхронды тексерулер үшін қысқа таймаут және бір
-  әрекет.
-- **Типтелген қателер** — барлығы `\RuntimeException`-ден тарайды және `NctExceptionInterface`-ті
-  іске асырады.
-- **Көмекшілер** — өтінім мәліметтерінің парсері, NTIN/XTIN форматын тексеру.
+- **Шақыру деңгейіндегі баптаулар** — интерфейстегі синхронды тексерулер үшін қысқа таймаут және бір әрекет.
+- **Типтелген қателер** — барлығы `\RuntimeException`-ден тарайды және `NctExceptionInterface`-ті іске асырады.
+- **Мән-объектілер** — `AttributeDefinition`, `DictionaryItem`, `ProductRequestPayload` (ретке тәуелсіз
+  салыстырумен), `RequestStatus` / `ExtendedRequestStatus` / `ImageType` / `DuplicateDecision`
+  тізбелері, `RequestDetailsParser`, `NationalCatalogIdentifier`.
 
 ## Талаптар
 
@@ -130,67 +136,187 @@ final class NtinLookup
 $card = $this->nct->fetchProductByGtin($gtin, timeoutOverride: 3.0, maxAttempts: 1);
 ```
 
+Порталда GTIN бірегей емес — бір GTIN бірнеше карточкаға тиесілі болуы мүмкін. Барлығын көру:
+
+```php
+$cards = $this->nct->portal()->fetchProductsByTin('4870001302818');   // GET /v2/products/{tin}
+```
+
 ### Өтінімнің өмірлік циклі
 
 ```php
+use Iperson1337\NctClientBundle\Request\ProductRequestPayload;
+
 $portal = $this->nct->portal();
 
-$response = $portal->submitProductRequest([
-    'oktru' => '10.51.11',
-    'autoPublication' => false,
-    'attributes' => [
+$payload = new ProductRequestPayload(
+    oktru: '10.51.11',
+    autoPublication: false,
+    attributes: [
         ['code' => 'gtin', 'value' => '4870001302818'],
         ['code' => 'name_ru', 'value' => 'Молоко 2,5% 1 л'],
     ],
-]);
-$requestId = (int) $response['id'];
+);
 
-$portal->submitToModeration($requestId);              // PUT …/requests/{id}/moderation
-$portal->updateProductRequest($requestId, $payload);  // PUT …/requests/{id}
-$portal->publishRequest($requestId);                  // PUT …/requests/{id}/publish
+$requestId = (int) $portal->submitProductRequest($payload->toArray())['id'];   // POST …/requests → жоба
+
+$portal->submitToModeration($requestId);                       // PUT …/{id}/moderation (new, underRevision)
+$portal->cancelRequest($requestId);                            // PUT …/{id}/cancel     (onModeration → cancelled)
+$portal->updateProductRequest($requestId, $payload->toArray()); // PUT …/{id}            (new, underRevision, cancelled)
+$portal->publishRequest($requestId);                           // PUT …/{id}/publish    (readyToPublish)
+$portal->deleteProductRequest($requestId);                     // DELETE …/{id}         (тек new)
 ```
 
-Портал *жасау* өтінімінде `NTIN` атрибутын қабылдамайды
-(`400 VALIDATION_ERROR: The "NTIN" field must not be filled when creating a new product`).
+Портал *жасау* өтінімінде `NTIN` атрибутын қабылдамайды. **Жарияланған** карточканы өңдеу үшін
+`submitProductRequest()` денесінде `ntin` беріңіз немесе карточканың өзінен бастаңыз:
+
+```php
+$draft = $portal->createEditRequest('0200212305195');   // POST …/requests/{ntin}/edit-product
+$requestId = (int) $draft['productRequestId'];
+$body = ProductRequestPayload::fromArray($draft);       // PUT …/requests/{id} сияқты форма
+// ескі карточкаларда `oktru` null келуі мүмкін — жібермес бұрын қолданыстағы категория кодын көрсетіңіз
+$portal->updateProductRequest($requestId, $body->toArray());
+```
+
+Өңдеу өтінімінде `name_ru`, `name_kk`, `ntin` және `tnved` өзгертілмейді; кеңейтілген карточкалар
+(КЗТИН-мен) API арқылы өңделмейді.
+
+`ProductRequestPayload` денелерді кілттер мен атрибуттардың ретіне қарамай салыстырады — сақталған
+өтінім шынымен өзгерді ме, соны модерацияны қайта қоздыратын `PUT` жібермес бұрын біліңіз:
+
+```php
+if (!$payload->matchesStoredJson($request->getRequestBody())) {
+    $portal->updateProductRequest($requestId, $payload->toArray());
+}
+```
 
 ### Өтінімнің мәртебесі мен мәліметтері
 
 ```php
 use Iperson1337\NctClientBundle\Request\RequestDetailsParser;
+use Iperson1337\NctClientBundle\Request\RequestStatus;
 
-$status  = $portal->fetchRequestStatus($requestId);   // ['code' => 'onModeration', 'value' => '…']
+$status = $portal->fetchRequestStatus($requestId);
+// ['code' => 'completed', 'value' => '…', 'ntinCode' => '0200…', 'productUrl' => '…',
+//  'comment' => …, 'revisionDetails' => [...], 'nextAction' => [...], 'gzStatus' => [...]]
+$code = RequestStatus::tryFrom($status['code']);
+if ($code?->isFinal()) { /* completed, rejected немесе existingProductSelected */ }
+
 $details = $portal->fetchRequestDetails($requestId, timeoutOverride: 3.0, maxAttempts: 1);
-
 $parser  = new RequestDetailsParser();
-$code    = $parser->extractStatusCode($details);               // 'completed', 'rejected', …
 $ntin    = $parser->extractAttributeValueByCode($details, 'ntin');
 $xtin    = $parser->extractAttributeValueByCode($details, 'xtin');
 $comment = $parser->extractModeratorComment($details);        // null — өріс жоқ; '' — өріс бар, бірақ бос
 
-$page = $portal->fetchProductRequests(page: 1, size: 50);
+$page = $portal->fetchProductRequests(page: 1, size: 50, status: RequestStatus::OnModeration);
+// ['content' => [...], 'totalElements' => N, 'totalPages' => M]
 ```
 
-Портал қайтаратын мәртебе кодтары: `new`, `onModeration`, `accepted`, `underRevision`,
-`readyToPublish`, `completed`, `rejected`.
+Негізгі өтінім мәртебелері (`RequestStatus`): `new`, `onModeration`, `accepted`, `underRevision`,
+`cancelled`, `readyToPublish`, `existingProductSelected`, `completed`, `rejected`. `gzStatus` ішіндегі
+кеңейтілген бөлік мәртебелері (`ExtendedRequestStatus`): `acceptedGz`, `underRevisionGz`, `rejectedGz`, `publishingGz`.
+
+### Дубликаттар
+
+Модерация өтінімді `DUPLICATE_REVIEW` себебімен қайтарғанда:
+
+```php
+use Iperson1337\NctClientBundle\Portal\DuplicateDecision;
+
+$matches = $portal->fetchDuplicates($requestId);   // orderNumber, name, brand, gtin, ntin, similarity
+$portal->decideDuplicates($requestId, DuplicateDecision::UseExisting, $matches[0]['ntin']);
+// немесе: $portal->decideDuplicates($requestId, DuplicateDecision::Continue);
+```
+
+### Фотосуреттер мен құжаттар
+
+Файлдар алдымен өтінімге жүктеледі (`new`, `underRevision`, `cancelled` мәртебелері; ең көбі 5 МБ),
+содан кейін өтінім денесінде `filename` арқылы көрсетіледі:
+
+```php
+use Iperson1337\NctClientBundle\Portal\ImageType;
+
+$front = $portal->uploadPhoto($requestId, ImageType::Front, '/path/front.jpg');     // POST …/storage/{id}/upload?imageType=front
+$back  = $portal->uploadPhoto($requestId, ImageType::Back, fopen('php://memory', 'r+'), 'back.jpg');
+$cert  = $portal->uploadDocument($requestId, '/path/certificate.pdf');              // POST …/storage/{id}/upload/document
+$portal->deleteFile($requestId, $cert['filename']);                                 // DELETE …/storage/{id}/{fileName}
+
+$payload = new ProductRequestPayload(
+    oktru: '10.51.11',
+    autoPublication: false,
+    attributes: [/* … соның ішінде ['code' => 'brand', 'value' => '…'] */],
+    isGov: true,
+    mainExtendedAttributes: [['code' => 'gross_weight', 'value' => '1.05']],
+    additionalExtendedAttributes: [/* fetchGovAttributes() нәтижесінен */],
+    imageFiles: [
+        ['fileName' => $front['filename'], 'imageType' => ImageType::Front->value],
+        ['fileName' => $back['filename'], 'imageType' => ImageType::Back->value],
+    ],
+    documents: [['fileName' => $cert['filename']]],
+);
+```
+
+Кеңейтілген карточкаға (`isGov: true`) модерация алдында `front` және `back` фотолары, `brand`
+атрибуты және кемінде бес қосымша сипаттама қажет.
 
 ### Атрибут сипаттамалары мен анықтамалықтар
 
 ```php
-$attributes = $portal->fetchAttributes();                  // code, dataType, isRequired, dictionaryCode, …
-$roots      = $portal->fetchDictionaryRoots('MEASURE_UNIT'); // COUNTRY, MEASURE_UNIT, TNVED, …
-$children   = $portal->fetchDictionaryChildren('MEASURE_UNIT', (int) $roots[0]['id']);
+use Iperson1337\NctClientBundle\Attribute\AttributeDefinition;
+use Iperson1337\NctClientBundle\Dictionary\DictionaryItem;
+
+foreach ($portal->fetchAttributes() as $row) {                 // GET …/requests/attributes
+    if (AttributeDefinition::missingRequiredFields($row) !== []) {
+        continue;
+    }
+    $definition = AttributeDefinition::fromPortalRow($row);
+    // $definition->code, ->dataType ('string'|'text'|'number'|'boolean'|'dictionary'|'multiDictionary'|'date'),
+    // ->isRequired, ->maxLength, ->pattern, ->dictionaryCode, ->dictionaryValues …
+}
+
+$gov = $portal->fetchGovAttributes('10.51.11');                // ОКТРУ үшін mainAttributes + additionalAttributes
+
+$dictionaries = $portal->fetchDictionaries();                   // GET …/dictionaries
+$roots = $portal->fetchDictionaryRoots('MEASURE_UNIT');         // ағаш тәрізді анықтамалықтар
+$children = $portal->fetchDictionaryChildren('MEASURE_UNIT', (int) $roots[0]['id']);
+$page = $portal->fetchDictionaryItems('TNVED', page: 1, size: 100);   // кез келген анықтамалық, беттеп (size 1..100)
+
+foreach ($roots as $row) {
+    if (DictionaryItem::missingRequiredField($row) === null) {
+        $item = DictionaryItem::fromRow($row);                 // externalId, code, nameRu, nameKk, parentId, level, hasChild, isDeleted
+    }
+}
 ```
 
-### nct.gov.kz: іздеу және карточка
+### nct.gov.kz: іздеу, карточка, экспорт
 
 ```php
 $gov = $this->nct->gov();
 
-$cards = $gov->searchByGtin($gtin);     // осы GTIN-мен барлық карточкалар, өшірілген дубликаттарды қоса; жоқ болса — []
-$card  = $gov->findActiveCard($gtin);   // ntin_isdeactivated === false болған біріншісі; бәрі өшірілген болса — null
-$ntin  = $gov->lookupNtin($gtin);       // ['gtin' => …, 'ntin_code' => string|null]; карточка жоқ болса — қате
-$full  = $gov->fetchProduct((int) $card['id']);   // GET /api/core/products/{id}; ОКТРУ — category.full_code ішінде
+$cards = $gov->searchByGtin($gtin);                          // осы кодпен барлық карточкалар, өшірілген дубликаттарды қоса; жоқ болса — []
+$cards = $gov->searchByTins(['4870235770032', '0200093179779']);   // бір сұрауда 100 NTIN/GTIN-ге дейін
+$page  = $gov->searchByName('Молоко', limit: 100, offset: 0);     // ['count', 'next', 'previous', 'last_modified', 'result' => [...]]
+$card  = $gov->findActiveCard($gtin);                        // ntin_isdeactivated === false болған біріншісі; бәрі өшірілген болса — null
+$ntin  = $gov->lookupNtin($gtin);                            // ['gtin' => …, 'ntin_code' => string|null]; карточка жоқ болса — қате
+$full  = $gov->fetchProduct((int) $card['id']);              // GET /api/core/products/{id}; ОКТРУ — category.full_code ішінде
 ```
+
+Уақыт бойынша экспортқа nct.gov.kz есептік жазбасы қажет (лимит: минутына 120 сұрау):
+
+```php
+$auth = $gov->login('username', 'password');                 // POST /api/auth/login/ — JWT бар жауап сол қалпында
+$jwt = $auth['access'] ?? $auth['token'];                    // кілт атауы порталдың жауабына байланысты
+
+$count = $gov->countChangedProducts($jwt, from: 1743596160)['count'];
+$page = $gov->exportProducts($jwt, from: 1743596160, limit: 1000, offset: 0);
+foreach ($page['result'] as $card) {
+    // id, name_ru, name_kk, gtin, ntin_code, is_social, modified, status, is_markedeac, measure,
+    // product_type (1 тауар, 2 жұмыс, 3 қызмет), ntin_isdeactivated, ntin_deactivationreason, ntin_duplicateofproduct
+}
+// келесі шақыру: from = алынған ең үлкен `modified`
+```
+
+Бірнеше сәтсіз кіру әрекетінен кейін портал есептік жазбаны 10 минутқа бұғаттайды (`403`, `locked_seconds`).
 
 ### NTIN / XTIN форматы
 
@@ -238,25 +364,42 @@ $id->normalize('  0200212305195 '); // '0200212305195'; бос → null
    шығарады.
 
 Екі хостқа да бір Guzzle-клиент. Порталға `Content-Type: application/json`, `Accept` және
-`X-API-KEY` жіберіледі; nct.gov.kz-ке — тек `Accept`: API кілті жария хостқа кетпейді.
+`X-API-KEY` жіберіледі (multipart жүктеулерде шекараны Guzzle қояды); nct.gov.kz-ке — тек `Accept`,
+экспорт үшін қосымша `Authorization: JWT …`: API кілті жария хостқа кетпейді.
 
 ## Эндпоинттер
 
 | Әдіс | HTTP |
 |---|---|
 | `NctPortalClient::submitProductRequest()` | `POST /gwp/portal/api/v1/products/requests` |
-| `NctPortalClient::submitToModeration()` | `PUT /gwp/portal/api/v1/products/requests/{id}/moderation` |
+| `NctPortalClient::createEditRequest()` | `POST /gwp/portal/api/v1/products/requests/{ntin}/edit-product` |
 | `NctPortalClient::updateProductRequest()` | `PUT /gwp/portal/api/v1/products/requests/{id}` |
+| `NctPortalClient::deleteProductRequest()` | `DELETE /gwp/portal/api/v1/products/requests/{id}` |
+| `NctPortalClient::submitToModeration()` | `PUT /gwp/portal/api/v1/products/requests/{id}/moderation` |
+| `NctPortalClient::cancelRequest()` | `PUT /gwp/portal/api/v1/products/requests/{id}/cancel` |
 | `NctPortalClient::publishRequest()` | `PUT /gwp/portal/api/v1/products/requests/{id}/publish` |
 | `NctPortalClient::fetchRequestStatus()` | `GET /gwp/portal/api/v1/products/requests/{id}/status` |
 | `NctPortalClient::fetchRequestDetails()` | `GET /gwp/portal/api/v1/products/requests/{id}/details` |
-| `NctPortalClient::fetchProductRequests()` | `GET /gwp/portal/api/v1/products/requests?page=&size=` |
-| `NctPortalClient::fetchProductByGtin()` | `GET /gwp/portal/api/v1/products/{gtin}` |
+| `NctPortalClient::fetchProductRequests()` | `GET /gwp/portal/api/v1/products/requests?page=&size=[&status=]` |
+| `NctPortalClient::fetchDuplicates()` | `GET /gwp/portal/api/v1/products/requests/{id}/duplicates` |
+| `NctPortalClient::decideDuplicates()` | `POST /gwp/portal/api/v1/products/requests/{id}/duplicate-decision` |
+| `NctPortalClient::uploadPhoto()` | `POST /gwp/portal/api/v1/storage/{requestId}/upload?imageType=` |
+| `NctPortalClient::uploadDocument()` | `POST /gwp/portal/api/v1/storage/{requestId}/upload/document` |
+| `NctPortalClient::deleteFile()` | `DELETE /gwp/portal/api/v1/storage/{requestId}/{fileName}` |
+| `NctPortalClient::fetchProductByGtin()` | `GET /gwp/portal/api/v1/products/{tin}` |
+| `NctPortalClient::fetchProductsByTin()` | `GET /gwp/portal/api/v2/products/{tin}` |
 | `NctPortalClient::fetchAttributes()` | `GET /gwp/portal/api/v1/products/requests/attributes` |
+| `NctPortalClient::fetchGovAttributes()` | `GET /gwp/portal/api/v1/products/requests/categories/{oktru}/gov-attributes` |
+| `NctPortalClient::fetchDictionaries()` | `GET /gwp/portal/api/v1/dictionaries` |
 | `NctPortalClient::fetchDictionaryRoots()` | `GET /gwp/portal/api/v1/dictionaries/{code}/roots` |
 | `NctPortalClient::fetchDictionaryChildren()` | `GET /gwp/portal/api/v1/dictionaries/{code}/children/{parentId}` |
-| `NctGovClient::searchByGtin()` | `GET /api/integration/ofd/search_ofd/?tin={gtin}` |
+| `NctPortalClient::fetchDictionaryItems()` | `GET /gwp/portal/api/v1/dictionaries/{code}/items?page=&size=` |
+| `NctGovClient::searchByGtin()`, `searchByTins()` | `GET /api/integration/ofd/search_ofd/?tin={codes}` |
+| `NctGovClient::searchByName()` | `GET /api/integration/ofd/search_ofd/?q={name}&limit=&offset=` |
 | `NctGovClient::fetchProduct()` | `GET /api/core/products/{id}` |
+| `NctGovClient::login()` | `POST /api/auth/login/` |
+| `NctGovClient::exportProducts()` | `GET /api/integration/ofd/ofd_product/?from=&limit=&offset=` (JWT) |
+| `NctGovClient::countChangedProducts()` | `GET /api/integration/ofd/ofd_product_count/?from=` (JWT) |
 
 ## Тестілеу
 
@@ -267,7 +410,9 @@ vendor/bin/phpunit
 
 `NctHttpClientTest` — транспорттың snapshot-тесті (31 сценарий: қайталаулар, `422`, `404`-тің барлық
 түрі, таймауттар, қате денелері, хост бойынша тақырыптар); эталон `tests/Http/__snapshots__/` ішінде.
-Эталонды саналы түрде қайта жазу: `UPDATE_SNAPSHOTS=1 vendor/bin/phpunit`.
+Эталонды саналы түрде қайта жазу: `UPDATE_SNAPSHOTS=1 vendor/bin/phpunit`. `NctPortalClientTest` және
+`NctGovClientTest` әр операцияның әдісін, жолын, query-ін, денесі мен тақырыптарын Guzzle `MockHandler`
+арқылы бекітеді.
 
 `NctClient`, `NctPortalClient` және `NctGovClient` `final` емес — оларды өз қолданбаңыздың тесттерінде
 алмастыруға болады.
@@ -277,7 +422,7 @@ vendor/bin/phpunit
 Бандл портал хаттамасын іске асырады. Ол әдейі өтінімдерді және олардың мәртебелерін сақта**майды**,
 идентификаторды тауарға қашан жазуға болатынын шеш**пейді**, сіздің деректер моделіңізден өтінім
 денесін құра**майды** және атрибуттар мен анықтамалық жолдарын сіздің анықтамалықтарыңызға
-келтір**мейді**. Бұл — қолданбаның шешімдері.
+келтір**мейді**. Мән-объектілер бұл жолдарға болжамды форма береді; келтірудің өзі қолданбада қалады.
 
 ## Лицензия
 

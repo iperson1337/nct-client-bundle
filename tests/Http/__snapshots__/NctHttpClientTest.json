@@ -323,7 +323,7 @@
     "testSend | unsupported method": {
         "result": {
             "throws": "InvalidArgumentException",
-            "message": "Unsupported HTTP method: DELETE",
+            "message": "Unsupported HTTP method: PATCH",
             "previous": null
         },
         "trace": [

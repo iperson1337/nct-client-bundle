@@ -53,7 +53,7 @@ final class NctHttpClientTest extends TestCase
         yield '200 null json' => [['responses' => [['status' => 200, 'body' => 'null']]]];
         yield '200 scalar json' => [['responses' => [['status' => 200, 'body' => '[]']]]];
         yield '200 invalid json' => [['responses' => [['status' => 200, 'body' => '{oops']]]];
-        yield 'unsupported method' => [['method' => 'DELETE', 'responses' => []]];
+        yield 'unsupported method' => [['method' => 'PATCH', 'responses' => []]];
         yield '429 then 200' => [['responses' => [$json(429, ['message' => 'Too many']), $json(200, ['ok' => true])]]];
         yield '429 no message then 200' => [['responses' => [['status' => 429, 'body' => ''], $json(200, ['ok' => true])]]];
         yield '429 until exhausted' => [['responses' => array_fill(0, 4, $json(429, ['message' => 'Too many']))]];

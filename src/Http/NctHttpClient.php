@@ -30,7 +30,7 @@ final class NctHttpClient
     /** Потолок сохраняемого тела ответа портала — оно оседает в логах и в тексте исключения. */
     public const int ERROR_BODY_MAX_LENGTH = 2000;
 
-    private const array METHODS = ['GET', 'POST', 'PUT'];
+    private const array METHODS = ['GET', 'POST', 'PUT', 'DELETE'];
 
     /**
      * @param array<string, string> $portalHeaders заголовки запросов на портал (Content-Type, Accept, X-API-KEY)
@@ -113,15 +113,20 @@ final class NctHttpClient
      */
     private function guzzleOptions(NctRequest $request): array
     {
-        $options = [
-            'headers' => $request->headers ?? $this->defaultHeaders($request->target),
-        ];
+        $headers = $request->headers ?? $this->defaultHeaders($request->target);
+        if ($request->multipart !== null) {
+            // Границу multipart выставит Guzzle; заранее заданный Content-Type её бы перебил.
+            unset($headers['Content-Type']);
+        }
+        $options = ['headers' => $headers];
 
         if ($request->timeoutOverride !== null) {
             $options['timeout'] = $request->timeoutOverride;
         }
 
-        if ($request->body !== null) {
+        if ($request->multipart !== null) {
+            $options['multipart'] = $request->multipart;
+        } elseif ($request->body !== null) {
             $options['body'] = $request->body;
         }
 

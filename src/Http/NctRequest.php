@@ -7,14 +7,16 @@ namespace Iperson1337\NctClientBundle\Http;
 /**
  * Один запрос к НКТ в терминах клиента: что и куда отправить и как трактовать ответ.
  *
- * @param string|null                $body            JSON-тело для POST/PUT
- * @param array<string, string>|null $headers         заголовки вместо стандартных для цели
- * @param float|null                 $timeoutOverride таймаут только этого вызова (секунды, дробные) —
- *                                                    для синхронных проверок в клике интерфейса
- * @param int|null                   $maxAttempts     число попыток только для этого вызова;
- *                                                    1 — без повтора после 429, сразу исключение
- * @param bool                       $notFoundAsEmpty 404 с телом «… not found» вернуть пустым массивом,
- *                                                    а не ошибкой (поиск карточки, которой может не быть)
+ * @param string|null                     $body            JSON-тело для POST/PUT
+ * @param array<string, string>|null      $headers         заголовки вместо стандартных для цели
+ * @param float|null                      $timeoutOverride таймаут только этого вызова (секунды, дробные) —
+ *                                                         для синхронных проверок в клике интерфейса
+ * @param int|null                        $maxAttempts     число попыток только для этого вызова;
+ *                                                         1 — без повтора после 429, сразу исключение
+ * @param bool                            $notFoundAsEmpty 404 с телом «… not found» вернуть пустым массивом,
+ *                                                         а не ошибкой (поиск карточки, которой может не быть)
+ * @param list<array<string, mixed>>|null $multipart       части multipart/form-data (формат Guzzle: name,
+ *                                                         contents, filename) — для загрузки файлов; тело тогда не задаётся
  */
 final readonly class NctRequest
 {
@@ -28,6 +30,7 @@ final readonly class NctRequest
         public ?float $timeoutOverride = null,
         public ?int $maxAttempts = null,
         public bool $notFoundAsEmpty = false,
+        public ?array $multipart = null,
     ) {
     }
 
@@ -41,15 +44,21 @@ final readonly class NctRequest
         return new self('PUT', $url, $operation, $body);
     }
 
-    public static function post(string $url, string $operation, string $body): self
+    public static function post(string $url, string $operation, ?string $body = null): self
     {
         return new self('POST', $url, $operation, $body);
+    }
+
+    public static function delete(string $url, string $operation): self
+    {
+        return new self('DELETE', $url, $operation);
     }
 
     /**
      * Копия с другими параметрами выполнения; null — оставить как есть.
      *
-     * @param array<string, string>|null $headers
+     * @param array<string, string>|null      $headers
+     * @param list<array<string, mixed>>|null $multipart
      */
     public function with(
         ?NctTarget $target = null,
@@ -57,6 +66,7 @@ final readonly class NctRequest
         ?float $timeoutOverride = null,
         ?int $maxAttempts = null,
         ?bool $notFoundAsEmpty = null,
+        ?array $multipart = null,
     ): self {
         return new self(
             $this->method,
@@ -68,6 +78,7 @@ final readonly class NctRequest
             $timeoutOverride ?? $this->timeoutOverride,
             $maxAttempts ?? $this->maxAttempts,
             $notFoundAsEmpty ?? $this->notFoundAsEmpty,
+            $multipart ?? $this->multipart,
         );
     }
 }
