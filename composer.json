@@ -1,0 +1,46 @@
+{
+  "name": "iperson1337/nct-client-bundle",
+  "description": "Symfony client for the National Catalog of Goods of Kazakhstan (НКТ): nationalcatalog.kz portal API (product requests, attributes, dictionaries) and nct.gov.kz public lookups, with retries, rate limiting and typed errors",
+  "type": "symfony-bundle",
+  "license": "MIT",
+  "keywords": ["nct", "national-catalog", "nationalcatalog", "ntin", "xtin", "gtin", "kazakhstan", "symfony", "symfony-bundle"],
+  "homepage": "https://github.com/iperson1337/nct-client-bundle",
+  "support": {
+    "issues": "https://github.com/iperson1337/nct-client-bundle/issues",
+    "source": "https://github.com/iperson1337/nct-client-bundle"
+  },
+  "require": {
+    "php": "^8.3",
+    "guzzlehttp/guzzle": "^7.0",
+    "psr/log": "^3.0",
+    "symfony/cache": "^7.4",
+    "symfony/config": "^7.4",
+    "symfony/dependency-injection": "^7.4",
+    "symfony/http-kernel": "^7.4"
+  },
+  "require-dev": {
+    "phpunit/phpunit": "^12.0"
+  },
+  "suggest": {
+    "ext-redis": "Redis-backed sliding-window rate limiter shared between processes (phpredis)",
+    "predis/predis": "Redis-backed rate limiter without the phpredis extension"
+  },
+  "autoload": {
+    "psr-4": {
+      "Iperson1337\\NctClientBundle\\": "src/"
+    }
+  },
+  "autoload-dev": {
+    "psr-4": {
+      "Iperson1337\\NctClientBundle\\Tests\\": "tests/"
+    }
+  },
+  "config": {
+    "sort-packages": true
+  },
+  "extra": {
+    "symfony": {
+      "allow-contrib": true
+    }
+  }
+}

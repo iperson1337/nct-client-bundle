@@ -1,0 +1,333 @@
+{
+    "testSend | 200 invalid json": {
+        "result": {
+            "throws": "Iperson1337\\NctClientBundle\\Exception\\NctResponseException",
+            "message": "NCT response JSON decode error: Syntax error",
+            "previous": null
+        },
+        "trace": [
+            "rateLimiter.portal",
+            "http GET https://nationalcatalog.kz/gwp/portal/api/v1/test timeout=NULL headers={\"User-Agent\":[\"GuzzleHttp\\/7\"],\"Host\":[\"nationalcatalog.kz\"],\"Content-Type\":[\"application\\/json\"],\"Accept\":[\"application\\/json\"],\"X-API-KEY\":[\"test-key\"]} body=''"
+        ]
+    },
+    "testSend | 200 null json": {
+        "result": [],
+        "trace": [
+            "rateLimiter.portal",
+            "http GET https://nationalcatalog.kz/gwp/portal/api/v1/test timeout=NULL headers={\"User-Agent\":[\"GuzzleHttp\\/7\"],\"Host\":[\"nationalcatalog.kz\"],\"Content-Type\":[\"application\\/json\"],\"Accept\":[\"application\\/json\"],\"X-API-KEY\":[\"test-key\"]} body=''"
+        ]
+    },
+    "testSend | 200 scalar json": {
+        "result": [],
+        "trace": [
+            "rateLimiter.portal",
+            "http GET https://nationalcatalog.kz/gwp/portal/api/v1/test timeout=NULL headers={\"User-Agent\":[\"GuzzleHttp\\/7\"],\"Host\":[\"nationalcatalog.kz\"],\"Content-Type\":[\"application\\/json\"],\"Accept\":[\"application\\/json\"],\"X-API-KEY\":[\"test-key\"]} body=''"
+        ]
+    },
+    "testSend | 200 whitespace body": {
+        "result": [],
+        "trace": [
+            "rateLimiter.portal",
+            "http GET https://nationalcatalog.kz/gwp/portal/api/v1/test timeout=NULL headers={\"User-Agent\":[\"GuzzleHttp\\/7\"],\"Host\":[\"nationalcatalog.kz\"],\"Content-Type\":[\"application\\/json\"],\"Accept\":[\"application\\/json\"],\"X-API-KEY\":[\"test-key\"]} body=''",
+            "log.info NCT testOperation returned empty response body {\"class\":\"Iperson1337\\\\NctClientBundle\\\\Http\\\\NctHttpClient\",\"operation\":\"testOperation\"}"
+        ]
+    },
+    "testSend | 400 empty body": {
+        "result": {
+            "throws": "Iperson1337\\NctClientBundle\\Exception\\NctClientException",
+            "message": "Ошибка выполнения запроса testOperation в NCT портале: Client error: `GET https://nationalcatalog.kz/gwp/portal/api/v1/test` resulted in a `400 Bad Request` response",
+            "previous": "GuzzleHttp\\Exception\\ClientException"
+        },
+        "trace": [
+            "rateLimiter.portal",
+            "http GET https://nationalcatalog.kz/gwp/portal/api/v1/test timeout=NULL headers={\"User-Agent\":[\"GuzzleHttp\\/7\"],\"Host\":[\"nationalcatalog.kz\"],\"Content-Type\":[\"application\\/json\"],\"Accept\":[\"application\\/json\"],\"X-API-KEY\":[\"test-key\"]} body=''",
+            "log.error NCT testOperation client error: Client error: `GET https://nationalcatalog.kz/gwp/portal/api/v1/test` resulted in a `400 Bad Request` response {\"class\":\"Iperson1337\\\\NctClientBundle\\\\Http\\\\NctHttpClient\",\"operation\":\"testOperation\",\"status_code\":400,\"response_body\":\"\"}"
+        ]
+    },
+    "testSend | 400 long body capped": {
+        "result": {
+            "throws": "Iperson1337\\NctClientBundle\\Exception\\NctClientException",
+            "message": "Ошибка выполнения запроса testOperation в NCT портале: HTTP 400 ошибка; ошибка; ошибка; ошибка; ошибка; ошибка; ошибка; ошибка; ошибка; ошибка; ошибка; ошибка; ошибка; ошибка; ошибка; ошибка; ошибка; ошибка; ошибка; ошибка; ошибка; ошибка; ошибка; ошибка; ошибка; ошибка; ошибка; ошибка; ошибка; ошибка; ошибка; ошибка; ошибка; ошибка; ошибка; ошибка; ошибка; ошибка; ошибка; ошибка; ошибка; ошибка; ошибка; ошибка; ошибка; ошибка; ошибка; ошибка; ошибка; ошибка; ошибка; ошибка; ошибка; ошибка; ошибка; ошибка; ошибка; ошибка; ошибка; ошибка; ошибка; ошибка; ошибка; ошибка; ошибка; ошибка; ошибка; ошибка; ошибка; ошибка; ошибка; ошибка; ошибка; ошибка; ошибка; ошибка; ошибка; ошибка; ошибка; ошибка; ошибка; ошибка; ошибка; ошибка; ошибка; ошибка; ошибка; ошибка; ошибка; ошибка; ошибка; ошибка; ошибка; ошибка; ошибка; ошибка; ошибка; ошибка; ошибка; ошибка; ошибка; ошибка; ошибка; ошибка; ошибка; ошибка; ошибка; ошибка; ошибка; ошибка; ошибка; ошибка; ошибка; ошибка; ошибка; ошибка; ошибка; ошибка; ошибка; ошибка; ошибка; ошибка; ошибка; ошибка; ошибка; ошибка; ошибка; ошибка; ошибка; ошибка; ошибка; ошибка; ошибка; ошибка; ошибка; ошибка; ошибка; ошибка; ошибка; ошибка; ошибка; ошибка; ошибка; ошибка; ошибка; ошибка; ошибка; ошибка; ошибка; ошибка; ошибка; ошибка; ошибка; ошибка; ошибка; ошибка; ошибка; ошибка; ошибка; ошибка; ошибка; ошибка; ошибка; ошибка; ошибка; ошибка; ошибка; ошибка; ошибка; ошибка; ошибка; ошибка; ошибка; ошибка; ошибка; ошибка; ошибка; ошибка; ошибка; ошибка; ошибка; ошибка; ошибка; ошибка; ошибка; ошибка; ошибка; ошибка; ошибка; ошибка; ошибка; ошибка; ошибка; ошибка; ошибка; ошибка; ошибка; ошибка; ошибка; ошибка; ошибка; ошибка; ошибка; ошибка; ошибка; ошибка; ошибка; ошибка; ошибка; ошибка; ошибка; ошибка; ошибка; ошибка; ошибка; ошибка; ошибка; ошибка; ошибка; ошибка; ошибка; ошибка; ошибка; ошибка; ошибка; ошибка; ошибка; ошибка; ошибка; ошибка; ошибка; ошибка; ошибка; ошибка; ошибка; ошибка; ошибка; ошибка; ошибка; ошибка; ошибка; ошибка; ошибка; ошибка; ошибка; ошибка; ошибка; ошибка; ошибка; ошибка; … [обрезано нами]",
+            "previous": "GuzzleHttp\\Exception\\ClientException"
+        },
+        "trace": [
+            "rateLimiter.portal",
+            "http GET https://nationalcatalog.kz/gwp/portal/api/v1/test timeout=NULL headers={\"User-Agent\":[\"GuzzleHttp\\/7\"],\"Host\":[\"nationalcatalog.kz\"],\"Content-Type\":[\"application\\/json\"],\"Accept\":[\"application\\/json\"],\"X-API-KEY\":[\"test-key\"]} body=''",
+            "log.error NCT testOperation client error: HTTP 400 ошибка; ошибка; ошибка; ошибка; ошибка; ошибка; ошибка; ошибка; ошибка; ошибка; ошибка; ошибка; ошибка; ошибка; ошибка; ошибка; ошибка; ошибка; ошибка; ошибка; ошибка; ошибка; ошибка; ошибка; ошибка; ошибка; ошибка; ошибка; ошибка; ошибка; ошибка; ошибка; ошибка; ошибка; ошибка; ошибка; ошибка; ошибка; ошибка; ошибка; ошибка; ошибка; ошибка; ошибка; ошибка; ошибка; ошибка; ошибка; ошибка; ошибка; ошибка; ошибка; ошибка; ошибка; ошибка; ошибка; ошибка; ошибка; ошибка; ошибка; ошибка; ошибка; ошибка; ошибка; ошибка; ошибка; ошибка; ошибка; ошибка; ошибка; ошибка; ошибка; ошибка; ошибка; ошибка; ошибка; ошибка; ошибка; ошибка; ошибка; ошибка; ошибка; ошибка; ошибка; ошибка; ошибка; ошибка; ошибка; ошибка; ошибка; ошибка; ошибка; ошибка; ошибка; ошибка; ошибка; ошибка; ошибка; ошибка; ошибка; ошибка; ошибка; ошибка; ошибка; ошибка; ошибка; ошибка; ошибка; ошибка; ошибка; ошибка; ошибка; ошибка; ошибка; ошибка; ошибка; ошибка; ошибка; ошибка; ошибка; ошибка; ошибка; ошибка; ошибка; ошибка; ошибка; ошибка; ошибка; ошибка; ошибка; ошибка; ошибка; ошибка; ошибка; ошибка; ошибка; ошибка; ошибка; ошибка; ошибка; ошибка; ошибка; ошибка; ошибка; ошибка; ошибка; ошибка; ошибка; ошибка; ошибка; ошибка; ошибка; ошибка; ошибка; ошибка; ошибка; ошибка; ошибка; ошибка; ошибка; ошибка; ошибка; ошибка; ошибка; ошибка; ошибка; ошибка; ошибка; ошибка; ошибка; ошибка; ошибка; ошибка; ошибка; ошибка; ошибка; ошибка; ошибка; ошибка; ошибка; ошибка; ошибка; ошибка; ошибка; ошибка; ошибка; ошибка; ошибка; ошибка; ошибка; ошибка; ошибка; ошибка; ошибка; ошибка; ошибка; ошибка; ошибка; ошибка; ошибка; ошибка; ошибка; ошибка; ошибка; ошибка; ошибка; ошибка; ошибка; ошибка; ошибка; ошибка; ошибка; ошибка; ошибка; ошибка; ошибка; ошибка; ошибка; ошибка; ошибка; ошибка; ошибка; ошибка; ошибка; ошибка; ошибка; ошибка; ошибка; ошибка; ошибка; ошибка; ошибка; ошибка; ошибка; ошибка; ошибка; ошибка; ошибка; ошибка; ошибка; ошибка; ошибка; ошибка; ошибка; ошибка; ошибка; ошибка; ошибка; ошибка; ошибка; … [обрезано нами] {\"class\":\"Iperson1337\\\\NctClientBundle\\\\Http\\\\NctHttpClient\",\"operation\":\"testOperation\",\"status_code\":400,\"response_body\":\"ошибка; ошибка; ошибка; ошибка; ошибка; ошибка; ошибка; ошибка; ошибка; ошибка; ошибка; ошибка; ошибка; ошибка; ошибка; ошибка; ошибка; ошибка; ошибка; ошибка; ошибка; ошибка; ошибка; ошибка; ошибка; ошибка; ошибка; ошибка; ошибка; ошибка; ошибка; ошибка; ошибка; ошибка; ошибка; ошибка; ошибка; ошибка; ошибка; ошибка; ошибка; ошибка; ошибка; ошибка; ошибка; ошибка; ошибка; ошибка; ошибка; ошибка; ошибка; ошибка; ошибка; ошибка; ошибка; ошибка; ошибка; ошибка; ошибка; ошибка; ошибка; ошибка; ошибка; ошибка; ошибка; ошибка; ошибка; ошибка; ошибка; ошибка; ошибка; ошибка; ошибка; ошибка; ошибка; ошибка; ошибка; ошибка; ошибка; ошибка; ошибка; ошибка; ошибка; ошибка; ошибка; ошибка; ошибка; ошибка; ошибка; ошибка; ошибка; ошибка; ошибка; ошибка; ошибка; ошибка; ошибка; ошибка; ошибка; ошибка; ошибка; ошибка; ошибка; ошибка; ошибка; ошибка; ошибка; ошибка; ошибка; ошибка; ошибка; ошибка; ошибка; ошибка; ошибка; ошибка; ошибка; ошибка; ошибка; ошибка; ошибка; ошибка; ошибка; ошибка; ошибка; ошибка; ошибка; ошибка; ошибка; ошибка; ошибка; ошибка; ошибка; ошибка; ошибка; ошибка; ошибка; ошибка; ошибка; ошибка; ошибка; ошибка; ошибка; ошибка; ошибка; ошибка; ошибка; ошибка; ошибка; ошибка; ошибка; ошибка; ошибка; ошибка; ошибка; ошибка; ошибка; ошибка; ошибка; ошибка; ошибка; ошибка; ошибка; ошибка; ошибка; ошибка; ошибка; ошибка; ошибка; ошибка; ошибка; ошибка; ошибка; ошибка; ошибка; ошибка; ошибка; ошибка; ошибка; ошибка; ошибка; ошибка; ошибка; ошибка; ошибка; ошибка; ошибка; ошибка; ошибка; ошибка; ошибка; ошибка; ошибка; ошибка; ошибка; ошибка; ошибка; ошибка; ошибка; ошибка; ошибка; ошибка; ошибка; ошибка; ошибка; ошибка; ошибка; ошибка; ошибка; ошибка; ошибка; ошибка; ошибка; ошибка; ошибка; ошибка; ошибка; ошибка; ошибка; ошибка; ошибка; ошибка; ошибка; ошибка; ошибка; ошибка; ошибка; ошибка; ошибка; ошибка; ошибка; ошибка; ошибка; ошибка; ошибка; ошибка; ошибка; ошибка; ошибка; ошибка; ошибка; ошибка; ошибка; ошибка; ошибка; ошибка; ошибка; ошибка; ошибка; ошибка; … [обрезано нами]\"}"
+        ]
+    },
+    "testSend | 404 empty body, as empty": {
+        "result": {
+            "throws": "Iperson1337\\NctClientBundle\\Exception\\NctClientException",
+            "message": "Ошибка выполнения запроса testOperation в NCT портале: Client error: `GET https://nationalcatalog.kz/gwp/portal/api/v1/test` resulted in a `404 Not Found` response",
+            "previous": "GuzzleHttp\\Exception\\ClientException"
+        },
+        "trace": [
+            "rateLimiter.portal",
+            "http GET https://nationalcatalog.kz/gwp/portal/api/v1/test timeout=NULL headers={\"User-Agent\":[\"GuzzleHttp\\/7\"],\"Host\":[\"nationalcatalog.kz\"],\"Content-Type\":[\"application\\/json\"],\"Accept\":[\"application\\/json\"],\"X-API-KEY\":[\"test-key\"]} body=''",
+            "log.error NCT testOperation client error: Client error: `GET https://nationalcatalog.kz/gwp/portal/api/v1/test` resulted in a `404 Not Found` response {\"class\":\"Iperson1337\\\\NctClientBundle\\\\Http\\\\NctHttpClient\",\"operation\":\"testOperation\",\"status_code\":404,\"response_body\":\"\"}"
+        ]
+    },
+    "testSend | 404 endpoint not found, as empty": {
+        "result": {
+            "throws": "Iperson1337\\NctClientBundle\\Exception\\NctClientException",
+            "message": "Ошибка выполнения запроса testOperation в NCT портале: HTTP 404 {\"Message\":\"endpoint not found\"}",
+            "previous": "GuzzleHttp\\Exception\\ClientException"
+        },
+        "trace": [
+            "rateLimiter.portal",
+            "http GET https://nationalcatalog.kz/gwp/portal/api/v1/test timeout=NULL headers={\"User-Agent\":[\"GuzzleHttp\\/7\"],\"Host\":[\"nationalcatalog.kz\"],\"Content-Type\":[\"application\\/json\"],\"Accept\":[\"application\\/json\"],\"X-API-KEY\":[\"test-key\"]} body=''",
+            "log.error NCT testOperation client error: HTTP 404 {\"Message\":\"endpoint not found\"} {\"class\":\"Iperson1337\\\\NctClientBundle\\\\Http\\\\NctHttpClient\",\"operation\":\"testOperation\",\"status_code\":404,\"response_body\":\"{\\\"Message\\\":\\\"endpoint not found\\\"}\"}"
+        ]
+    },
+    "testSend | 404 non-json, as empty": {
+        "result": {
+            "throws": "Iperson1337\\NctClientBundle\\Exception\\NctClientException",
+            "message": "Ошибка выполнения запроса testOperation в NCT портале: HTTP 404 product not found",
+            "previous": "GuzzleHttp\\Exception\\ClientException"
+        },
+        "trace": [
+            "rateLimiter.portal",
+            "http GET https://nationalcatalog.kz/gwp/portal/api/v1/test timeout=NULL headers={\"User-Agent\":[\"GuzzleHttp\\/7\"],\"Host\":[\"nationalcatalog.kz\"],\"Content-Type\":[\"application\\/json\"],\"Accept\":[\"application\\/json\"],\"X-API-KEY\":[\"test-key\"]} body=''",
+            "log.error NCT testOperation client error: HTTP 404 product not found {\"class\":\"Iperson1337\\\\NctClientBundle\\\\Http\\\\NctHttpClient\",\"operation\":\"testOperation\",\"status_code\":404,\"response_body\":\"product not found\"}"
+        ]
+    },
+    "testSend | 404 product not found lowercase key, as empty": {
+        "result": [],
+        "trace": [
+            "rateLimiter.portal",
+            "http GET https://nationalcatalog.kz/gwp/portal/api/v1/test timeout=NULL headers={\"User-Agent\":[\"GuzzleHttp\\/7\"],\"Host\":[\"nationalcatalog.kz\"],\"Content-Type\":[\"application\\/json\"],\"Accept\":[\"application\\/json\"],\"X-API-KEY\":[\"test-key\"]} body=''"
+        ]
+    },
+    "testSend | 404 product not found, as empty": {
+        "result": [],
+        "trace": [
+            "rateLimiter.portal",
+            "http GET https://nationalcatalog.kz/gwp/portal/api/v1/test timeout=NULL headers={\"User-Agent\":[\"GuzzleHttp\\/7\"],\"Host\":[\"nationalcatalog.kz\"],\"Content-Type\":[\"application\\/json\"],\"Accept\":[\"application\\/json\"],\"X-API-KEY\":[\"test-key\"]} body=''"
+        ]
+    },
+    "testSend | 404 product not found, not as empty": {
+        "result": {
+            "throws": "Iperson1337\\NctClientBundle\\Exception\\NctClientException",
+            "message": "Ошибка выполнения запроса testOperation в NCT портале: HTTP 404 {\"Message\":\"product (tin=123) not found\"}",
+            "previous": "GuzzleHttp\\Exception\\ClientException"
+        },
+        "trace": [
+            "rateLimiter.portal",
+            "http GET https://nationalcatalog.kz/gwp/portal/api/v1/test timeout=NULL headers={\"User-Agent\":[\"GuzzleHttp\\/7\"],\"Host\":[\"nationalcatalog.kz\"],\"Content-Type\":[\"application\\/json\"],\"Accept\":[\"application\\/json\"],\"X-API-KEY\":[\"test-key\"]} body=''",
+            "log.error NCT testOperation client error: HTTP 404 {\"Message\":\"product (tin=123) not found\"} {\"class\":\"Iperson1337\\\\NctClientBundle\\\\Http\\\\NctHttpClient\",\"operation\":\"testOperation\",\"status_code\":404,\"response_body\":\"{\\\"Message\\\":\\\"product (tin=123) not found\\\"}\"}"
+        ]
+    },
+    "testSend | 422 other code": {
+        "result": {
+            "throws": "Iperson1337\\NctClientBundle\\Exception\\NctClientException",
+            "message": "Ошибка выполнения запроса testOperation в NCT портале: HTTP 422 {\"code\":\"VALIDATION\",\"message\":\"bad brand\"}",
+            "previous": "GuzzleHttp\\Exception\\ClientException"
+        },
+        "trace": [
+            "rateLimiter.portal",
+            "http GET https://nationalcatalog.kz/gwp/portal/api/v1/test timeout=NULL headers={\"User-Agent\":[\"GuzzleHttp\\/7\"],\"Host\":[\"nationalcatalog.kz\"],\"Content-Type\":[\"application\\/json\"],\"Accept\":[\"application\\/json\"],\"X-API-KEY\":[\"test-key\"]} body=''",
+            "log.error NCT testOperation client error: HTTP 422 {\"code\":\"VALIDATION\",\"message\":\"bad brand\"} {\"class\":\"Iperson1337\\\\NctClientBundle\\\\Http\\\\NctHttpClient\",\"operation\":\"testOperation\",\"status_code\":422,\"response_body\":\"{\\\"code\\\":\\\"VALIDATION\\\",\\\"message\\\":\\\"bad brand\\\"}\"}"
+        ]
+    },
+    "testSend | 422 too many requests then 200": {
+        "result": {
+            "ok": 1
+        },
+        "trace": [
+            "rateLimiter.portal",
+            "http GET https://nationalcatalog.kz/gwp/portal/api/v1/test timeout=NULL headers={\"User-Agent\":[\"GuzzleHttp\\/7\"],\"Host\":[\"nationalcatalog.kz\"],\"Content-Type\":[\"application\\/json\"],\"Accept\":[\"application\\/json\"],\"X-API-KEY\":[\"test-key\"]} body=''",
+            "log.warning NCT rate limit exceeded (testOperation), waiting 0 seconds for window reset before retry {\"class\":\"Iperson1337\\\\NctClientBundle\\\\Http\\\\NctHttpClient\",\"operation\":\"testOperation\",\"attempt\":1,\"max_attempts\":4,\"target\":\"portal\",\"message\":\"slow down\"}",
+            "http GET https://nationalcatalog.kz/gwp/portal/api/v1/test timeout=NULL headers={\"User-Agent\":[\"GuzzleHttp\\/7\"],\"Host\":[\"nationalcatalog.kz\"],\"Content-Type\":[\"application\\/json\"],\"Accept\":[\"application\\/json\"],\"X-API-KEY\":[\"test-key\"]} body=''"
+        ]
+    },
+    "testSend | 429 max attempts 1": {
+        "result": {
+            "throws": "Iperson1337\\NctClientBundle\\Exception\\NctRateLimitExceededException",
+            "message": "Превышен лимит запросов к NCT порталу (testOperation): Client error: `GET https://nationalcatalog.kz/gwp/portal/api/v1/test` resulted in a `429 Too Many Requests` response:\n[]\n",
+            "previous": "GuzzleHttp\\Exception\\ClientException"
+        },
+        "trace": [
+            "rateLimiter.portal",
+            "http GET https://nationalcatalog.kz/gwp/portal/api/v1/test timeout=NULL headers={\"User-Agent\":[\"GuzzleHttp\\/7\"],\"Host\":[\"nationalcatalog.kz\"],\"Content-Type\":[\"application\\/json\"],\"Accept\":[\"application\\/json\"],\"X-API-KEY\":[\"test-key\"]} body=''",
+            "log.error NCT testOperation rate limit exceeded, no attempts left: Client error: `GET https://nationalcatalog.kz/gwp/portal/api/v1/test` resulted in a `429 Too Many Requests` response:\n[]\n {\"class\":\"Iperson1337\\\\NctClientBundle\\\\Http\\\\NctHttpClient\",\"operation\":\"testOperation\"}"
+        ]
+    },
+    "testSend | 429 no message then 200": {
+        "result": {
+            "ok": true
+        },
+        "trace": [
+            "rateLimiter.portal",
+            "http GET https://nationalcatalog.kz/gwp/portal/api/v1/test timeout=NULL headers={\"User-Agent\":[\"GuzzleHttp\\/7\"],\"Host\":[\"nationalcatalog.kz\"],\"Content-Type\":[\"application\\/json\"],\"Accept\":[\"application\\/json\"],\"X-API-KEY\":[\"test-key\"]} body=''",
+            "log.warning NCT rate limit exceeded (testOperation), waiting 0 seconds for window reset before retry {\"class\":\"Iperson1337\\\\NctClientBundle\\\\Http\\\\NctHttpClient\",\"operation\":\"testOperation\",\"attempt\":1,\"max_attempts\":4,\"target\":\"portal\",\"message\":\"Rate limit exceeded\"}",
+            "http GET https://nationalcatalog.kz/gwp/portal/api/v1/test timeout=NULL headers={\"User-Agent\":[\"GuzzleHttp\\/7\"],\"Host\":[\"nationalcatalog.kz\"],\"Content-Type\":[\"application\\/json\"],\"Accept\":[\"application\\/json\"],\"X-API-KEY\":[\"test-key\"]} body=''"
+        ]
+    },
+    "testSend | 429 then 200": {
+        "result": {
+            "ok": true
+        },
+        "trace": [
+            "rateLimiter.portal",
+            "http GET https://nationalcatalog.kz/gwp/portal/api/v1/test timeout=NULL headers={\"User-Agent\":[\"GuzzleHttp\\/7\"],\"Host\":[\"nationalcatalog.kz\"],\"Content-Type\":[\"application\\/json\"],\"Accept\":[\"application\\/json\"],\"X-API-KEY\":[\"test-key\"]} body=''",
+            "log.warning NCT rate limit exceeded (testOperation), waiting 0 seconds for window reset before retry {\"class\":\"Iperson1337\\\\NctClientBundle\\\\Http\\\\NctHttpClient\",\"operation\":\"testOperation\",\"attempt\":1,\"max_attempts\":4,\"target\":\"portal\",\"message\":\"Too many\"}",
+            "http GET https://nationalcatalog.kz/gwp/portal/api/v1/test timeout=NULL headers={\"User-Agent\":[\"GuzzleHttp\\/7\"],\"Host\":[\"nationalcatalog.kz\"],\"Content-Type\":[\"application\\/json\"],\"Accept\":[\"application\\/json\"],\"X-API-KEY\":[\"test-key\"]} body=''"
+        ]
+    },
+    "testSend | 429 until exhausted": {
+        "result": {
+            "throws": "Iperson1337\\NctClientBundle\\Exception\\NctRateLimitExceededException",
+            "message": "Превышен лимит запросов к NCT порталу (testOperation): Client error: `GET https://nationalcatalog.kz/gwp/portal/api/v1/test` resulted in a `429 Too Many Requests` response:\n{\"message\":\"Too many\"}\n",
+            "previous": "GuzzleHttp\\Exception\\ClientException"
+        },
+        "trace": [
+            "rateLimiter.portal",
+            "http GET https://nationalcatalog.kz/gwp/portal/api/v1/test timeout=NULL headers={\"User-Agent\":[\"GuzzleHttp\\/7\"],\"Host\":[\"nationalcatalog.kz\"],\"Content-Type\":[\"application\\/json\"],\"Accept\":[\"application\\/json\"],\"X-API-KEY\":[\"test-key\"]} body=''",
+            "log.warning NCT rate limit exceeded (testOperation), waiting 0 seconds for window reset before retry {\"class\":\"Iperson1337\\\\NctClientBundle\\\\Http\\\\NctHttpClient\",\"operation\":\"testOperation\",\"attempt\":1,\"max_attempts\":4,\"target\":\"portal\",\"message\":\"Too many\"}",
+            "http GET https://nationalcatalog.kz/gwp/portal/api/v1/test timeout=NULL headers={\"User-Agent\":[\"GuzzleHttp\\/7\"],\"Host\":[\"nationalcatalog.kz\"],\"Content-Type\":[\"application\\/json\"],\"Accept\":[\"application\\/json\"],\"X-API-KEY\":[\"test-key\"]} body=''",
+            "log.warning NCT rate limit exceeded (testOperation), waiting 0 seconds for window reset before retry {\"class\":\"Iperson1337\\\\NctClientBundle\\\\Http\\\\NctHttpClient\",\"operation\":\"testOperation\",\"attempt\":2,\"max_attempts\":4,\"target\":\"portal\",\"message\":\"Too many\"}",
+            "http GET https://nationalcatalog.kz/gwp/portal/api/v1/test timeout=NULL headers={\"User-Agent\":[\"GuzzleHttp\\/7\"],\"Host\":[\"nationalcatalog.kz\"],\"Content-Type\":[\"application\\/json\"],\"Accept\":[\"application\\/json\"],\"X-API-KEY\":[\"test-key\"]} body=''",
+            "log.warning NCT rate limit exceeded (testOperation), waiting 0 seconds for window reset before retry {\"class\":\"Iperson1337\\\\NctClientBundle\\\\Http\\\\NctHttpClient\",\"operation\":\"testOperation\",\"attempt\":3,\"max_attempts\":4,\"target\":\"portal\",\"message\":\"Too many\"}",
+            "http GET https://nationalcatalog.kz/gwp/portal/api/v1/test timeout=NULL headers={\"User-Agent\":[\"GuzzleHttp\\/7\"],\"Host\":[\"nationalcatalog.kz\"],\"Content-Type\":[\"application\\/json\"],\"Accept\":[\"application\\/json\"],\"X-API-KEY\":[\"test-key\"]} body=''",
+            "log.error NCT testOperation rate limit exceeded, no attempts left: Client error: `GET https://nationalcatalog.kz/gwp/portal/api/v1/test` resulted in a `429 Too Many Requests` response:\n{\"message\":\"Too many\"}\n {\"class\":\"Iperson1337\\\\NctClientBundle\\\\Http\\\\NctHttpClient\",\"operation\":\"testOperation\"}"
+        ]
+    },
+    "testSend | 500 server error": {
+        "result": {
+            "throws": "Iperson1337\\NctClientBundle\\Exception\\NctTransportException",
+            "message": "Ошибка выполнения запроса testOperation в NCT портале: Server error: `GET https://nationalcatalog.kz/gwp/portal/api/v1/test` resulted in a `500 Internal Server Error` response:\nboom\n",
+            "previous": "GuzzleHttp\\Exception\\ServerException"
+        },
+        "trace": [
+            "rateLimiter.portal",
+            "http GET https://nationalcatalog.kz/gwp/portal/api/v1/test timeout=NULL headers={\"User-Agent\":[\"GuzzleHttp\\/7\"],\"Host\":[\"nationalcatalog.kz\"],\"Content-Type\":[\"application\\/json\"],\"Accept\":[\"application\\/json\"],\"X-API-KEY\":[\"test-key\"]} body=''",
+            "log.error NCT testOperation transport error: Server error: `GET https://nationalcatalog.kz/gwp/portal/api/v1/test` resulted in a `500 Internal Server Error` response:\nboom\n {\"class\":\"Iperson1337\\\\NctClientBundle\\\\Http\\\\NctHttpClient\",\"operation\":\"testOperation\"}"
+        ]
+    },
+    "testSend | GET 200 json": {
+        "result": {
+            "id": 5,
+            "name": "Молоко"
+        },
+        "trace": [
+            "rateLimiter.portal",
+            "http GET https://nationalcatalog.kz/gwp/portal/api/v1/test timeout=NULL headers={\"User-Agent\":[\"GuzzleHttp\\/7\"],\"Host\":[\"nationalcatalog.kz\"],\"Content-Type\":[\"application\\/json\"],\"Accept\":[\"application\\/json\"],\"X-API-KEY\":[\"test-key\"]} body=''"
+        ]
+    },
+    "testSend | POST 200 json": {
+        "result": {
+            "id": 7
+        },
+        "trace": [
+            "rateLimiter.portal",
+            "http POST https://nationalcatalog.kz/gwp/portal/api/v1/test timeout=NULL headers={\"Content-Length\":[\"7\"],\"User-Agent\":[\"GuzzleHttp\\/7\"],\"Host\":[\"nationalcatalog.kz\"],\"Content-Type\":[\"application\\/json\"],\"Accept\":[\"application\\/json\"],\"X-API-KEY\":[\"test-key\"]} body='{\"a\":1}'"
+        ]
+    },
+    "testSend | PUT 200 empty body": {
+        "result": [],
+        "trace": [
+            "rateLimiter.portal",
+            "http PUT https://nationalcatalog.kz/gwp/portal/api/v1/test timeout=NULL headers={\"Content-Length\":[\"2\"],\"User-Agent\":[\"GuzzleHttp\\/7\"],\"Host\":[\"nationalcatalog.kz\"],\"Content-Type\":[\"application\\/json\"],\"Accept\":[\"application\\/json\"],\"X-API-KEY\":[\"test-key\"]} body='{}'",
+            "log.info NCT testOperation returned empty response body {\"class\":\"Iperson1337\\\\NctClientBundle\\\\Http\\\\NctHttpClient\",\"operation\":\"testOperation\"}"
+        ]
+    },
+    "testSend | connect exception": {
+        "result": {
+            "throws": "Iperson1337\\NctClientBundle\\Exception\\NctRequestTimeoutException",
+            "message": "Таймаут соединения с NCT порталом (testOperation): Connection refused",
+            "previous": "GuzzleHttp\\Exception\\ConnectException"
+        },
+        "trace": [
+            "rateLimiter.portal",
+            "http GET https://nationalcatalog.kz/gwp/portal/api/v1/test timeout=NULL headers={\"User-Agent\":[\"GuzzleHttp\\/7\"],\"Host\":[\"nationalcatalog.kz\"],\"Content-Type\":[\"application\\/json\"],\"Accept\":[\"application\\/json\"],\"X-API-KEY\":[\"test-key\"]} body=''",
+            "log.error NCT testOperation connect timeout: Connection refused {\"class\":\"Iperson1337\\\\NctClientBundle\\\\Http\\\\NctHttpClient\",\"operation\":\"testOperation\"}"
+        ]
+    },
+    "testSend | custom headers, timeout override": {
+        "result": {
+            "a": "b"
+        },
+        "trace": [
+            "rateLimiter.portal",
+            "http GET https://nationalcatalog.kz/gwp/portal/api/v1/test timeout=1.0 headers={\"User-Agent\":[\"GuzzleHttp\\/7\"],\"Host\":[\"nationalcatalog.kz\"],\"X-Test\":[\"1\"]} body=''"
+        ]
+    },
+    "testSend | gov host 429 then 200": {
+        "result": {
+            "ok": 1
+        },
+        "trace": [
+            "rateLimiter.gov",
+            "http GET https://nationalcatalog.kz/gwp/portal/api/v1/test timeout=NULL headers={\"User-Agent\":[\"GuzzleHttp\\/7\"],\"Host\":[\"nationalcatalog.kz\"],\"Accept\":[\"application\\/json\"]} body=''",
+            "log.warning NCT rate limit exceeded (testOperation), waiting 0 seconds for window reset before retry {\"class\":\"Iperson1337\\\\NctClientBundle\\\\Http\\\\NctHttpClient\",\"operation\":\"testOperation\",\"attempt\":1,\"max_attempts\":4,\"target\":\"gov\",\"message\":\"Rate limit exceeded\"}",
+            "http GET https://nationalcatalog.kz/gwp/portal/api/v1/test timeout=NULL headers={\"User-Agent\":[\"GuzzleHttp\\/7\"],\"Host\":[\"nationalcatalog.kz\"],\"Accept\":[\"application\\/json\"]} body=''"
+        ]
+    },
+    "testSend | gov host default headers": {
+        "result": [
+            {
+                "gtin": "1"
+            }
+        ],
+        "trace": [
+            "rateLimiter.gov",
+            "http GET https://nationalcatalog.kz/gwp/portal/api/v1/test timeout=NULL headers={\"User-Agent\":[\"GuzzleHttp\\/7\"],\"Host\":[\"nationalcatalog.kz\"],\"Accept\":[\"application\\/json\"]} body=''"
+        ]
+    },
+    "testSend | gov host timeout override": {
+        "result": [
+            {
+                "gtin": "1"
+            }
+        ],
+        "trace": [
+            "rateLimiter.gov",
+            "http GET https://nationalcatalog.kz/gwp/portal/api/v1/test timeout=2.5 headers={\"User-Agent\":[\"GuzzleHttp\\/7\"],\"Host\":[\"nationalcatalog.kz\"],\"Accept\":[\"application\\/json\"]} body=''"
+        ]
+    },
+    "testSend | max attempts 0": {
+        "result": {
+            "throws": "Iperson1337\\NctClientBundle\\Exception\\NctTransportException",
+            "message": "Не удалось выполнить запрос testOperation после 0 попыток",
+            "previous": null
+        },
+        "trace": [
+            "rateLimiter.portal"
+        ]
+    },
+    "testSend | request other errno": {
+        "result": {
+            "throws": "Iperson1337\\NctClientBundle\\Exception\\NctTransportException",
+            "message": "Ошибка выполнения запроса testOperation в NCT портале: cURL error 6",
+            "previous": "GuzzleHttp\\Exception\\RequestException"
+        },
+        "trace": [
+            "rateLimiter.portal",
+            "http GET https://nationalcatalog.kz/gwp/portal/api/v1/test timeout=NULL headers={\"User-Agent\":[\"GuzzleHttp\\/7\"],\"Host\":[\"nationalcatalog.kz\"],\"Content-Type\":[\"application\\/json\"],\"Accept\":[\"application\\/json\"],\"X-API-KEY\":[\"test-key\"]} body=''",
+            "log.error NCT testOperation transport error: cURL error 6 {\"class\":\"Iperson1337\\\\NctClientBundle\\\\Http\\\\NctHttpClient\",\"operation\":\"testOperation\"}"
+        ]
+    },
+    "testSend | request timeout errno": {
+        "result": {
+            "throws": "Iperson1337\\NctClientBundle\\Exception\\NctRequestTimeoutException",
+            "message": "Таймаут запроса к NCT порталу (testOperation): cURL error 28",
+            "previous": "GuzzleHttp\\Exception\\RequestException"
+        },
+        "trace": [
+            "rateLimiter.portal",
+            "http GET https://nationalcatalog.kz/gwp/portal/api/v1/test timeout=NULL headers={\"User-Agent\":[\"GuzzleHttp\\/7\"],\"Host\":[\"nationalcatalog.kz\"],\"Content-Type\":[\"application\\/json\"],\"Accept\":[\"application\\/json\"],\"X-API-KEY\":[\"test-key\"]} body=''",
+            "log.error NCT testOperation request timeout: cURL error 28 {\"class\":\"Iperson1337\\\\NctClientBundle\\\\Http\\\\NctHttpClient\",\"operation\":\"testOperation\"}"
+        ]
+    },
+    "testSend | unsupported method": {
+        "result": {
+            "throws": "InvalidArgumentException",
+            "message": "Unsupported HTTP method: DELETE",
+            "previous": null
+        },
+        "trace": [
+            "rateLimiter.portal"
+        ]
+    }
+}
